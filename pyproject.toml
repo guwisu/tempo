@@ -13,9 +13,6 @@ dependencies = [
     "typer>=0.27.1",
 ]
 
-[project.scripts]
-tempo = "tempo:main"
-
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
@@ -24,3 +21,6 @@ build-backend = "uv_build"
 dev = [
     "pytest>=9.1.1",
 ]
+
+[project.scripts]
+tempo = "tempo.cli:app"
