@@ -1,17 +1,26 @@
 [project]
 name = "tempo"
 version = "0.1.0"
-description = ""
-authors = [
-    {name = "guwisu",email = "kolyabelykov@mail.ru"}
-]
+description = "Add your description here"
 readme = "README.md"
+authors = [
+    { name = "guwisu"}
+]
 requires-python = ">=3.13"
 dependencies = [
-    "typer (>=0.27.1,<0.28.0)"
+    "rich>=15.0.0",
+    "sqlalchemy>=2.0.52",
+    "typer>=0.27.1",
 ]
 
+[project.scripts]
+tempo = "tempo:main"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
