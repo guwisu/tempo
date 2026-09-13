@@ -28,7 +28,3 @@ def status():
 def today():
     """Shows today's activity."""
     typer.echo("Your today's activity.")
-
-
-if __name__ == "__main__":
-    app()

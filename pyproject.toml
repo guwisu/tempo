@@ -24,4 +24,4 @@ dev = [
 ]
 
 [project.scripts]
-tempo = "tempo.cli:app"
+tempo = "tempo.main:app"
