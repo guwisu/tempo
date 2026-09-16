@@ -1,5 +1,5 @@
 import typer
-
+from .database import session_maker
 app = typer.Typer(
     name="tempo",
     help="Stay productive and focused with Tempo",
@@ -9,6 +9,10 @@ app = typer.Typer(
 @app.command()
 def start(activity: str):
     """Start tracking an activity."""
+    with session_maker() as session:
+        query = sele
+        session.execute()
+
     typer.echo(f"Starting activity: {activity}.")
 
 
