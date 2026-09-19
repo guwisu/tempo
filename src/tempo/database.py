@@ -8,5 +8,7 @@ engine = create_engine(settings.database_url)
 
 session_maker = sessionmaker(bind=engine)
 
+session = session_maker()
+
 class Base(DeclarativeBase):
     pass

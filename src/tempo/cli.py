@@ -1,5 +1,9 @@
 import typer
-from .database import session_maker
+
+from .services.session import SessionService 
+
+session = SessionService()
+
 app = typer.Typer(
     name="tempo",
     help="Stay productive and focused with Tempo",
@@ -21,8 +25,7 @@ def stop():
 @app.command()
 def status():
     """Shows your status."""
-    typer.echo("Your activity: ...")
-    
+    typer.echo(f"Your activity: {session.get_current_activity()}.")
 
 
 @app.command()
