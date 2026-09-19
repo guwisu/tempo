@@ -22,6 +22,7 @@ def stop():
 def status():
     """Shows your status."""
     typer.echo("Your activity: ...")
+    
 
 
 @app.command()
