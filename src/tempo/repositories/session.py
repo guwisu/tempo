@@ -1,4 +1,5 @@
-from sqlalchemy import select
+from datetime import datetime, timezone
+from sqlalchemy import select, insert
 
 from tempo.models import SessionOrm
 from tempo.schemas import Session
@@ -16,8 +17,16 @@ class SessionRepository():
             return None
         return model
 
-    def create_session(self):
-        ...
+    def create_session(self, activity: str):
+        stmt = insert(self.model).values(
+            activity=activity,
+            started_at=datetime.now(timezone.utc),
+            finished_at=None,
+        ).returning(self.model)
+        result = self.session.execute(stmt)
+        model = result.scalar_one()
+        self.session.commit()
+        return model
 
     def finish_session(self):
         ...
