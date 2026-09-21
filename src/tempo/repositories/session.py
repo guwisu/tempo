@@ -14,7 +14,7 @@ class SessionRepository():
         model = result.scalars().one_or_none()
         if model is None:
             return None
-        return model.activity
+        return model
 
     def create_session(self):
         ...

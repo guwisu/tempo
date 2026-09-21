@@ -13,7 +13,11 @@ class SessionService():
         ...
 
     def get_current_activity(self):
-        return self.db.get_active_session()
+        current_activity = self.db.get_active_session()
+        if current_activity:
+            return current_activity
+        else:
+            return Exception
 
     def get_today(self):
         ...
