@@ -18,7 +18,10 @@ class SessionService():
         return created_session
 
     def stop_activity(self):
-        ...
+        finished_activity = self.db.finish_session()
+        if finished_activity:
+            return finished_activity
+        return Exception
 
     
 

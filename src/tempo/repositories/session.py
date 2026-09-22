@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, update
 
 from tempo.models import SessionOrm
 from tempo.schemas import Session
@@ -10,12 +10,9 @@ class SessionRepository():
         self.model = SessionOrm
 
     def get_active_session(self) -> Session | None:
-        query = select(self.model).filter_by(finished_at=None)
+        query = select(self.model).where(self.model.finished_at.is_(None))
         result = self.session.execute(query)
-        model = result.scalars().one_or_none()
-        if model is None:
-            return None
-        return model
+        return result.scalars().one_or_none()
 
     def create_session(self, activity: str):
         stmt = insert(self.model).values(
@@ -29,7 +26,17 @@ class SessionRepository():
         return model
 
     def finish_session(self):
-        ...
+        stmt = (
+            update(self.model)
+            .values(finished_at=datetime.now(timezone.utc))
+            .where(self.model.finished_at.is_(None))
+            .returning(self.model)
+        )
+        result = self.session.execute(stmt)
+        model = result.scalar_one()
+        self.session.commit()
+        return model
+
 
     def get_today_sessions(self):
         ...
