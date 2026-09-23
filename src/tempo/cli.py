@@ -1,9 +1,9 @@
 import typer
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from .services.session import SessionService 
-
+from .utils import _format_duration
 session = SessionService()
 
 app = typer.Typer(
@@ -53,4 +53,22 @@ Total time: {stopped_session.finished_at - stopped_session.started_at}.
 @app.command()
 def today():
     """Shows today's activity."""
-    typer.echo("Your today's activity.")
+    sessions = session.get_today()
+
+    if not sessions:
+        typer.echo("No activities tracked today.")
+        return
+
+    now = datetime.now(timezone.utc)
+    total_duration = timedelta()
+    typer.echo("Your today's activity:")
+    for s in sessions:
+        if s.finished_at:
+            duration = s.finished_at - s.started_at
+        else:
+            duration = now - s.started_at
+
+        total_duration += duration
+        typer.echo(f"{s.activity}: {_format_duration(duration)}")
+
+    typer.echo(f"Total: {_format_duration(total_duration)}")
