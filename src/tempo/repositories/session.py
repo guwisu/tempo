@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from sqlalchemy import select, insert, update
 
 from tempo.models import SessionOrm
@@ -39,4 +39,15 @@ class SessionRepository():
 
 
     def get_today_sessions(self):
-        ...
+        today_start = datetime.now(timezone.utc).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+        today_end = today_start + timedelta(days=1)
+        query = (
+            select(self.model)
+            .where(self.model.started_at >= today_start)
+            .where(self.model.started_at < today_end)
+            .order_by(self.model.started_at)
+        )
+        result = self.session.execute(query)
+        return result.scalars().all()

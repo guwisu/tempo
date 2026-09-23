@@ -23,7 +23,5 @@ class SessionService():
             return finished_activity
         return Exception
 
-    
-
     def get_today(self):
-        ...
+        return self.db.get_today_sessions()
