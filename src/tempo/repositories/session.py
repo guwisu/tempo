@@ -3,7 +3,7 @@ from sqlalchemy import select, insert, update
 
 from tempo.models import SessionOrm
 from tempo.schemas import Session
-from tempo.exceptions import SessionAlreadyExists
+from tempo.exceptions import SessionAlreadyExists, SessionDoesNotExists
 
 
 class SessionRepository():
@@ -14,7 +14,10 @@ class SessionRepository():
     def get_active_session(self) -> Session | None:
         query = select(self.model).where(self.model.finished_at.is_(None))
         result = self.session.execute(query)
-        return result.scalars().one_or_none()
+        model = result.scalars().one_or_none()
+        if model is None:
+            raise SessionDoesNotExists("Activity session doesn't exists!")
+        return model
 
     def create_session(self, activity: str):
         test_query = select(self.model).where(self.model.finished_at.is_(None))
@@ -40,6 +43,8 @@ class SessionRepository():
         )
         result = self.session.execute(stmt)
         model = result.scalar_one_or_none()
+        if model is None:
+            raise SessionDoesNotExists("Activity session doesn't exists!")
         self.session.commit()
         return model
 

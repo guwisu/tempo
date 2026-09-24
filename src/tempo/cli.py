@@ -15,14 +15,12 @@ app = typer.Typer(
 def status():
     """Shows your status."""
     activity_data = session.get_current_activity()
-    try:
-        typer.echo(
+    typer.echo(
             f"""Your activity: {activity_data.activity}.
     Was started at: {activity_data.started_at}.
     Time: {datetime.now(timezone.utc) - activity_data.started_at}.
         """)
-    except Exception:
-        print("You don't have any activity!")
+
 
 @app.command()
 def start(activity: str):

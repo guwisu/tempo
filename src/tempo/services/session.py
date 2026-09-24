@@ -10,8 +10,7 @@ class SessionService():
         current_activity = self.db.get_active_session()
         if current_activity:
             return current_activity
-        else:
-            return Exception
+
         
     def start_activity(self, activity: str):
         created_session = self.db.create_session(activity)
@@ -24,4 +23,4 @@ class SessionService():
         return Exception
 
     def get_today(self):
-        return self.db.get_today_sessions()
+        return self.db.get_today_sessions()
