@@ -27,7 +27,6 @@ def status():
 @app.command()
 def start(activity: str):
     """Start tracking an activity."""
-    typer.echo(f"Starting activity: {activity}.")
     new_session = session.start_activity(activity)
     typer.echo(
             f"""Activity: {activity}.
@@ -38,7 +37,6 @@ Was started at: {new_session.started_at}."""
 @app.command()
 def stop():
     """Stop the current activity."""
-    typer.echo("Stopping current activity...")
     stopped_session = session.stop_activity()
     try:
         typer.echo(
