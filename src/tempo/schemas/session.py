@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from datetime import datetime
 
@@ -7,3 +7,5 @@ class Session(BaseModel):
     activity: str
     started_at: datetime
     finished_at: datetime | None
+
+    model_config = ConfigDict(from_attributes=True)

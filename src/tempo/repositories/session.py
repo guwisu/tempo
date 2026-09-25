@@ -7,9 +7,7 @@ from tempo.exceptions import SessionAlreadyExists, SessionDoesNotExists
 
 
 class SessionRepository():
-    def __init__(self, session) -> None:
-        self.session = session
-        self.model = SessionOrm
+    model = SessionOrm
 
     def get_active_session(self) -> Session | None:
         query = select(self.model).where(self.model.finished_at.is_(None))
@@ -17,7 +15,7 @@ class SessionRepository():
         model = result.scalars().one_or_none()
         if model is None:
             raise SessionDoesNotExists("Activity session doesn't exists!")
-        return model
+        return Session.model_validate(model)
 
     def create_session(self, activity: str):
         test_query = select(self.model).where(self.model.finished_at.is_(None))
@@ -32,7 +30,7 @@ class SessionRepository():
         result = self.session.execute(stmt)
         model = result.scalar_one()
         self.session.commit()
-        return model
+        return Session.model_validate(model)
 
     def finish_session(self):
         stmt = (
@@ -46,7 +44,7 @@ class SessionRepository():
         if model is None:
             raise SessionDoesNotExists("Activity session doesn't exists!")
         self.session.commit()
-        return model
+        return Session.model_validate(model)
 
 
     def get_today_sessions(self):
@@ -61,4 +59,4 @@ class SessionRepository():
             .order_by(self.model.started_at)
         )
         result = self.session.execute(query)
-        return result.scalars().all()
+        return list(map(Session.model_validate, result))
