@@ -1,10 +1,9 @@
-
 from tempo.repositories import SessionRepository
 
-from tempo.database import session
 
 class SessionService():
-    db = SessionRepository(session=session)
+    def __init__(self, session):
+        self.db = SessionRepository(session=session)
 
     def get_current_activity(self):
         return self.db.get_active_session()

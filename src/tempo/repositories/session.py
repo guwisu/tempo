@@ -7,9 +7,11 @@ from tempo.exceptions import SessionAlreadyExists, SessionDoesNotExists
 
 
 class SessionRepository():
-    model = SessionOrm
+    def __init__(self, session):
+        self.model = SessionOrm
+        self.session = session
 
-    def get_active_session(self) -> Session | None:
+    def get_active_session(self) -> Session:
         query = select(self.model).where(self.model.finished_at.is_(None))
         result = self.session.execute(query)
         model = result.scalars().one_or_none()
@@ -17,7 +19,7 @@ class SessionRepository():
             raise SessionDoesNotExists("Activity session doesn't exists!")
         return Session.model_validate(model)
 
-    def create_session(self, activity: str):
+    def create_session(self, activity: str) -> Session:
         test_query = select(self.model).where(self.model.finished_at.is_(None))
         test_result = self.session.execute(test_query)
         if test_result.scalars().one_or_none() is not None:
@@ -32,7 +34,7 @@ class SessionRepository():
         self.session.commit()
         return Session.model_validate(model)
 
-    def finish_session(self):
+    def finish_session(self) -> Session:
         stmt = (
             update(self.model)
             .values(finished_at=datetime.now(timezone.utc))
@@ -42,12 +44,12 @@ class SessionRepository():
         result = self.session.execute(stmt)
         model = result.scalar_one_or_none()
         if model is None:
-            raise SessionDoesNotExists("Activity session doesn't exists!")
+            raise SessionDoesNotExists
         self.session.commit()
         return Session.model_validate(model)
 
 
-    def get_today_sessions(self):
+    def get_today_sessions(self) -> list[Session]:
         today_start = datetime.now(timezone.utc).replace(
             hour=0, minute=0, second=0, microsecond=0
         )
@@ -59,4 +61,4 @@ class SessionRepository():
             .order_by(self.model.started_at)
         )
         result = self.session.execute(query)
-        return list(map(Session.model_validate, result))
+        return list(map(Session.model_validate, result.scalars()))
