@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 
 def _format_duration(td: timedelta) -> str:
@@ -13,3 +13,8 @@ def _format_duration(td: timedelta) -> str:
         parts.append(f"{minutes}m")
     parts.append(f"{seconds}s")
     return " ".join(parts)
+
+def _format_time(dt: datetime) -> str:
+    """Format UTC datetime to local time string (HH:MM:SS)"""
+    local_dt = dt.astimezone()
+    return local_dt.strftime("%H:%M:%S")
