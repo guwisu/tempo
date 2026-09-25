@@ -36,14 +36,11 @@ Was started at: {new_session.started_at}."""
 def stop():
     """Stop the current activity."""
     stopped_session = session.stop_activity()
-    try:
-        typer.echo(
-            f"""Finished activity: {stopped_session.activity}.
+    typer.echo(
+        f"""Finished activity: {stopped_session.activity}.
 Total time: {stopped_session.finished_at - stopped_session.started_at}.
-            """
-        )
-    except Exception:
-        print("You don't have any activity!")
+        """
+    )
 
 
 @app.command()
