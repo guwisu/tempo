@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
@@ -8,7 +9,18 @@ engine = create_engine(settings.database_url)
 
 session_maker = sessionmaker(bind=engine)
 
-session = session_maker()
 
 class Base(DeclarativeBase):
     pass
+
+
+@contextmanager
+def get_session():
+    with session_maker() as session:
+        try:
+            yield session
+        except Exception:
+            session.rollback()
+            raise
+        finally:
+            session.close()
