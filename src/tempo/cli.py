@@ -3,7 +3,7 @@ import typer
 from datetime import datetime, timezone, timedelta
 
 from .services.session import SessionService 
-from .utils import _format_duration, _format_time
+from .utils import _format_duration, _format_time, print_about_panel
 from .database import get_session
 from .exceptions import SessionDoesNotExists, SessionAlreadyExists
 
@@ -12,6 +12,12 @@ app = typer.Typer(
     name="tempo",
     help="Stay productive and focused with Tempo",
 )
+
+@app.command()
+def about():
+    """Shows information about Tempo."""
+    print_about_panel()
+
 
 @app.command()
 def status():
