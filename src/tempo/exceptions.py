@@ -1,10 +1,10 @@
 
 
-class SessionAlreadyExists(Exception):
+class SessionAlreadyActive(Exception):
     """Raised when active session is already exists"""
     pass
 
 
-class SessionDoesNotExists(Exception):
+class SessionNotFound(Exception):
     """Raised when session doesn't exists"""
     pass
