@@ -12,6 +12,7 @@ dependencies = [
     "black>=26.5.1",
     "psycopg[binary]>=3.3.4",
     "pydantic-settings>=2.15.0",
+    "pytest>=9.1.1",
     "rich>=15.0.0",
     "sqlalchemy>=2.0.52",
     "typer>=0.27.1",
