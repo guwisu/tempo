@@ -3,9 +3,10 @@ import typer
 from datetime import datetime, timezone, timedelta
 
 from .services.session import SessionService 
-from .utils import _format_duration, _format_time, print_about_panel
+from presentation.console import print_about_panel
+from presentation.formatters import _format_duration, _format_time
 from .database import get_session
-from .exceptions import SessionDoesNotExists, SessionAlreadyExists
+from .exceptions import SessionNotFound, SessionAlreadyActive
 
 
 app = typer.Typer(
@@ -29,9 +30,10 @@ def status():
             typer.secho(
                 f"Your activity: {activity_data.activity}\n"
                 f"Was started at: {_format_time(activity_data.started_at)}\n"
-                f"Time: {_format_duration(datetime.now(timezone.utc) - activity_data.started_at)}"
+                f"Time: {_format_duration(datetime.now(timezone.utc) - activity_data.started_at)}",
+                fg=typer.colors.GREEN
             )
-        except SessionDoesNotExists as e:
+        except SessionNotFound as e:
             typer.secho(f"Info: {e}", fg=typer.colors.YELLOW)
 
 
@@ -47,7 +49,7 @@ def start(activity: str):
                 f"Was started at: {_format_time(new_session.started_at)}", 
                 fg=typer.colors.GREEN
             )
-        except SessionAlreadyExists as e:
+        except SessionAlreadyActive as e:
             typer.secho(f"Error: {e}", fg=typer.colors.RED)
 
 
@@ -63,7 +65,7 @@ def stop():
                 f"Total time: {_format_duration(stopped_session.finished_at - stopped_session.started_at)}", 
                 fg=typer.colors.GREEN
             )
-        except SessionDoesNotExists as e:
+        except SessionNotFound as e:
             typer.secho(f"Error: {e}", fg=typer.colors.RED)
 
 
@@ -89,5 +91,5 @@ def today():
 
             total_duration += duration
             typer.echo(f"{s.activity}: {_format_duration(duration)}")
-
+        typer.echo("---------------")
         typer.secho(f"Total: {_format_duration(total_duration)}", bold=True, fg=typer.colors.BRIGHT_BLUE)

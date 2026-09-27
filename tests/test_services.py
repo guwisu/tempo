@@ -1,6 +1,6 @@
 import pytest
 from tempo.services.session import SessionService
-from tempo.exceptions import SessionAlreadyExists, SessionDoesNotExists
+from tempo.exceptions import SessionAlreadyActive, SessionNotFound
 
 
 def test_start_activity(db_session):
@@ -54,13 +54,13 @@ def test_get_today(db_session):
 def test_stop_without_active_session(db_session):
     service = SessionService(db_session)
 
-    with pytest.raises(SessionDoesNotExists):
+    with pytest.raises(SessionNotFound):
         service.stop_activity()
 
 def test_status_without_active_session(db_session):
     service = SessionService(db_session)
 
-    with pytest.raises(SessionDoesNotExists):
+    with pytest.raises(SessionNotFound):
         service.get_current_activity()
 
 def test_start_with_active_session(db_session):
@@ -68,5 +68,5 @@ def test_start_with_active_session(db_session):
 
     service.start_activity("activity")
 
-    with pytest.raises(SessionAlreadyExists):
+    with pytest.raises(SessionAlreadyActive):
         service.start_activity("something")
