@@ -14,15 +14,15 @@ Time tracking CLI for developers.
 
 ## Tech Stack
 
-Python 3.13
-Typer
-SQLAlchemy
-PostgreSQL
-Alembic
-Pydantic
-Pytest
-Docker
-uv
+- Python 3.13
+- Typer
+- SQLAlchemy
+- PostgreSQL
+- Alembic
+- Pydantic
+- Pytest
+- Docker
+- uv
 
 ## Installation
 
@@ -30,10 +30,10 @@ uv
 
 ## Usage
 
-tempo start coding
-tempo status
-tempo stop
-tempo today
+- tempo start coding
+- tempo status
+- tempo stop
+- tempo today
 
 ## Architecture
 
