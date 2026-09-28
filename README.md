@@ -46,3 +46,7 @@ Time tracking CLI for developers.
 ## Testing
 
 ...
+
+## License
+
+This project is under the MIT license.
