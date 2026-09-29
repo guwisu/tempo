@@ -7,7 +7,7 @@ from tempo.config import settings
 
 engine = create_engine(settings.database_url)
 
-session_maker = sessionmaker(bind=engine)
+session_maker = sessionmaker(bind=engine, expire_on_commit=False)
 
 
 class Base(DeclarativeBase):
