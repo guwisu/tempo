@@ -68,6 +68,19 @@ def stop():
         except SessionNotFound as e:
             typer.secho(f"Error: {e}", fg=typer.colors.RED)
 
+@app.command()
+def cancel():
+    """Cancel the current activity."""
+    with get_session() as session:
+        service = SessionService(session)
+        try:
+            canceled_session = service.cancel_activity()
+            typer.secho(
+                f"Canceled activity: {canceled_session.activity}",
+                fg=typer.colors.BRIGHT_YELLOW
+            )
+        except SessionNotFound as e:
+            typer.secho(f"Error: {e}", fg=typer.colors.RED)
 
 @app.command()
 def today():

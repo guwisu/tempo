@@ -14,5 +14,8 @@ class SessionService():
     def stop_activity(self):
         return self.db.finish_session()
 
+    def cancel_activity(self):
+        return self.db.cancel_session()
+
     def get_today(self):
         return self.db.get_today_sessions()

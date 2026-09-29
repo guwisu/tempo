@@ -1,5 +1,5 @@
 from datetime import datetime, timezone, timedelta
-from sqlalchemy import select, insert, update
+from sqlalchemy import select, insert, update, delete
 
 from tempo.models import SessionOrm
 from tempo.schemas import Session
@@ -48,7 +48,19 @@ class SessionRepository():
         self.session.commit()
         return Session.model_validate(model)
 
-
+    def cancel_session(self):
+        stmt = (
+            delete(self.model)
+            .where(self.model.finished_at.is_(None))
+            .returning(self.model)
+        )
+        result = self.session.execute(stmt)
+        model = result.scalar_one_or_none()
+        if model is None:
+            raise SessionNotFound
+        self.session.commit()
+        return Session.model_validate(model)
+    
     def get_today_sessions(self) -> list[Session]:
         today_start = datetime.now(timezone.utc).replace(
             hour=0, minute=0, second=0, microsecond=0
