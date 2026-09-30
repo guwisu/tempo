@@ -18,16 +18,17 @@ class SessionService():
             raise SessionAlreadyActive("Activity session already active!")
         
         new_activity = self.db.create_session(activity)
+        result = Session.model_validate(new_activity)
         self.db.session.commit()
-        return Session.model_validate(new_activity)
+        return result
 
     def stop_activity(self):
         stopped_activity = self.db.finish_session()
         if not stopped_activity:
             raise SessionNotFound("Activity session not found!")
-        
+        result = Session.model_validate(stopped_activity)
         self.db.session.commit()
-        return Session.model_validate(stopped_activity)
+        return result
 
     def cancel_activity(self):
         canceled_activity = self.db.cancel_session()
