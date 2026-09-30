@@ -2,8 +2,6 @@ from datetime import datetime, timezone, timedelta
 from sqlalchemy import select, insert, update, delete
 
 from tempo.models import SessionOrm
-from tempo.schemas import Session
-from tempo.exceptions import SessionAlreadyActive, SessionNotFound
 
 
 class SessionRepository():
@@ -11,19 +9,12 @@ class SessionRepository():
         self.model = SessionOrm
         self.session = session
 
-    def get_active_session(self) -> Session:
+    def get_active_session(self) -> SessionOrm | None:
         query = select(self.model).where(self.model.finished_at.is_(None))
         result = self.session.execute(query)
-        model = result.scalars().one_or_none()
-        if model is None:
-            raise SessionNotFound("Activity session doesn't exists!")
-        return Session.model_validate(model)
+        return result.scalar_one_or_none()
 
-    def create_session(self, activity: str) -> Session:
-        test_query = select(self.model).where(self.model.finished_at.is_(None))
-        test_result = self.session.execute(test_query)
-        if test_result.scalars().one_or_none() is not None:
-            raise SessionAlreadyActive("Active session already exists!")
+    def create_session(self, activity: str) -> SessionOrm:
         stmt = insert(self.model).values(
             activity=activity.lower().strip(),
             started_at=datetime.now(timezone.utc),
@@ -32,9 +23,9 @@ class SessionRepository():
         result = self.session.execute(stmt)
         model = result.scalar_one()
         self.session.commit()
-        return Session.model_validate(model)
+        return model
 
-    def finish_session(self) -> Session:
+    def finish_session(self) -> SessionOrm | None:
         stmt = (
             update(self.model)
             .values(finished_at=datetime.now(timezone.utc))
@@ -43,25 +34,19 @@ class SessionRepository():
         )
         result = self.session.execute(stmt)
         model = result.scalar_one_or_none()
-        if model is None:
-            raise SessionNotFound
         self.session.commit()
-        return Session.model_validate(model)
+        return model
 
-    def cancel_session(self):
+    def cancel_session(self) -> SessionOrm | None:
         stmt = (
             delete(self.model)
             .where(self.model.finished_at.is_(None))
             .returning(self.model)
         )
         result = self.session.execute(stmt)
-        model = result.scalar_one_or_none()
-        if model is None:
-            raise SessionNotFound
-        self.session.commit()
-        return Session.model_validate(model)
+        return result.scalar_one_or_none()
     
-    def get_today_sessions(self) -> list[Session]:
+    def get_today_sessions(self) -> list[SessionOrm]:
         today_start = datetime.now(timezone.utc).replace(
             hour=0, minute=0, second=0, microsecond=0
         )
@@ -73,4 +58,4 @@ class SessionRepository():
             .order_by(self.model.started_at)
         )
         result = self.session.execute(query)
-        return list(map(Session.model_validate, result.scalars()))
+        return result.scalars()

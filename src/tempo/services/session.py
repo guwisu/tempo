@@ -1,21 +1,34 @@
 from tempo.repositories import SessionRepository
-
+from tempo.exceptions import SessionAlreadyActive, SessionNotFound
+from tempo.schemas import Session
 
 class SessionService():
     def __init__(self, session):
         self.db = SessionRepository(session=session)
 
     def get_current_activity(self):
-        return self.db.get_active_session()
+        current_activity = self.db.get_active_session()
+        if current_activity is None:
+            raise SessionNotFound("Activity session not found!")
+        return Session.model_validate(current_activity)
 
     def start_activity(self, activity: str):
-        return self.db.create_session(activity)
+        test_activity = self.db.get_active_session()
+        if test_activity:
+            raise SessionAlreadyActive("Activity session already active!")
+        return Session.model_validate(self.db.create_session(activity))
 
     def stop_activity(self):
-        return self.db.finish_session()
+        stopped_activity = self.db.finish_session()
+        if not stopped_activity:
+            raise SessionNotFound("Activity session not found!")
+        return Session.model_validate(stopped_activity)
 
     def cancel_activity(self):
-        return self.db.cancel_session()
+        canceled_activity = self.db.cancel_session()
+        if not canceled_activity:
+            raise SessionNotFound("Activity session not found!")
+        return Session.model_validate(canceled_activity)
 
     def get_today(self):
-        return self.db.get_today_sessions()
+        return list(map(Session.model_validate, self.db.get_today_sessions()))
