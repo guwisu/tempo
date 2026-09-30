@@ -1,3 +1,4 @@
+from sqlalchemy import Index, text
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import String, DateTime
 from datetime import datetime
@@ -16,5 +17,14 @@ class SessionOrm(Base):
     finished_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
+    )
+
+    __table_args__ = (
+        Index(
+            "ix_only_one_active_session", 
+            text("(1)"),
+            unique=True, 
+            postgresql_where=finished_at.is_(None)
+        ),
     )
     
