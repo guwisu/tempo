@@ -17,6 +17,15 @@ def test_stop_activity(db_session):
     session = service.stop_activity()
     assert session.finished_at is not None
 
+def test_cancel_activity(db_session):
+    service = SessionService(db_session)
+
+    service.start_activity("thing")
+
+    service.cancel_activity()
+
+    with pytest.raises(SessionNotFound):
+        service.get_current_activity()
 
 def test_current_status(db_session):
     service = SessionService(db_session)
