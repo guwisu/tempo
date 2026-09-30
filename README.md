@@ -33,6 +33,7 @@ Time tracking CLI for developers.
 - tempo start coding
 - tempo status
 - tempo stop
+- tempo cancel
 - tempo today
 
 ## Architecture
