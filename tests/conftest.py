@@ -1,12 +1,16 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from testcontainers.community.postgres import PostgresContainer
+
 from tempo.database import Base
 
 
 @pytest.fixture(scope="session")
 def engine():
-    return create_engine("sqlite:///:memory:")
+    with PostgresContainer("postgres:16-alpine") as postgres:
+        engine = create_engine(postgres.get_connection_url().replace("psycopg2", "psycopg"))
+        yield engine
 
 @pytest.fixture(scope="session")
 def tables(engine):
