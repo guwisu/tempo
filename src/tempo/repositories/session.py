@@ -22,7 +22,6 @@ class SessionRepository():
         ).returning(self.model)
         result = self.session.execute(stmt)
         model = result.scalar_one()
-        self.session.commit()
         return model
 
     def finish_session(self) -> SessionOrm | None:
@@ -34,7 +33,6 @@ class SessionRepository():
         )
         result = self.session.execute(stmt)
         model = result.scalar_one_or_none()
-        self.session.commit()
         return model
 
     def cancel_session(self) -> SessionOrm | None:
