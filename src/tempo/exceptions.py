@@ -8,3 +8,8 @@ class SessionAlreadyActive(Exception):
 class SessionNotFound(Exception):
     """Raised when session doesn't exists"""
     pass
+
+
+class InvalidActivityName(Exception):
+    """Raised when activity name is empty or too long"""
+    pass
