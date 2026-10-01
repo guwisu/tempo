@@ -1,6 +1,6 @@
 import pytest
 from tempo.services.session import SessionService
-from tempo.exceptions import SessionAlreadyActive, SessionNotFound
+from tempo.exceptions import SessionAlreadyActive, SessionNotFound, InvalidActivityName
 
 
 def test_start_activity(db_session):
@@ -79,3 +79,21 @@ def test_start_with_active_session(db_session):
 
     with pytest.raises(SessionAlreadyActive):
         service.start_activity("something")
+
+def test_start_empty_activity(db_session):
+    service = SessionService(db_session)
+
+    with pytest.raises(InvalidActivityName):
+        service.start_activity("   ")
+
+    with pytest.raises(InvalidActivityName):
+        service.start_activity("")
+
+def test_start_too_long_activity(db_session):
+    service = SessionService(db_session)
+    test_activity = "a" * 101
+
+    with pytest.raises(InvalidActivityName):
+        service.start_activity(test_activity)
+
+    
