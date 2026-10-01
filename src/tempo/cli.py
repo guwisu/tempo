@@ -6,7 +6,7 @@ from .services.session import SessionService
 from presentation.console import print_about_panel
 from presentation.formatters import _format_duration, _format_time
 from .database import get_session
-from .exceptions import SessionNotFound, SessionAlreadyActive
+from .exceptions import SessionNotFound, SessionAlreadyActive, InvalidActivityName
 
 
 app = typer.Typer(
@@ -49,7 +49,7 @@ def start(activity: str):
                 f"Was started at: {_format_time(new_session.started_at)}", 
                 fg=typer.colors.GREEN
             )
-        except SessionAlreadyActive as e:
+        except (SessionAlreadyActive, InvalidActivityName) as e:
             typer.secho(f"Error: {e}", fg=typer.colors.RED)
 
 

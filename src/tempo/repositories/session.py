@@ -16,7 +16,7 @@ class SessionRepository():
 
     def create_session(self, activity: str) -> SessionOrm:
         stmt = insert(self.model).values(
-            activity=activity.lower().strip(),
+            activity=activity,
             started_at=datetime.now(timezone.utc),
             finished_at=None,
         ).returning(self.model)

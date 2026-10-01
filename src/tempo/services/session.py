@@ -1,5 +1,5 @@
 from tempo.repositories import SessionRepository
-from tempo.exceptions import SessionAlreadyActive, SessionNotFound
+from tempo.exceptions import SessionAlreadyActive, SessionNotFound, InvalidActivityName
 from tempo.schemas import Session
 
 class SessionService():
@@ -16,6 +16,11 @@ class SessionService():
         test_activity = self.db.get_active_session()
         if test_activity:
             raise SessionAlreadyActive("Activity session already active!")
+        clear_activity = activity.strip()
+        if not clear_activity:
+            raise InvalidActivityName("Activity name can't be empty!")
+        if len(clear_activity) > 100:
+            raise InvalidActivityName("Activity name is too long (max 100 chars)!")
         
         new_activity = self.db.create_session(activity)
         result = Session.model_validate(new_activity)
