@@ -45,15 +45,17 @@ class SessionRepository():
         return result.scalar_one_or_none()
     
     def get_today_sessions(self) -> list[SessionOrm]:
-        today_start = datetime.now(timezone.utc).replace(
-            hour=0, minute=0, second=0, microsecond=0
-        )
-        today_end = today_start + timedelta(days=1)
+        local_now = datetime.now().astimezone()
+        local_today_start = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        utc_today_start = local_today_start.astimezone(timezone.utc)
+        uts_today_end = utc_today_start + timedelta(days=1)
+        
         query = (
             select(self.model)
-            .where(self.model.started_at >= today_start)
-            .where(self.model.started_at < today_end)
+            .where(self.model.started_at >= utc_today_start)
+            .where(self.model.started_at < uts_today_end)
             .order_by(self.model.started_at)
         )
         result = self.session.execute(query)
-        return result.scalars()
+        return list(result.scalars())
