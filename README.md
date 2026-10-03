@@ -1,5 +1,10 @@
 # Tempo [![Python](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](https://opensource.org/licenses/MIT)
 
+<div>
+    <img height="55" alt="image" src="https://github.com/user-attachments/assets/93ab8883-d697-46a0-b54c-4acd19560e4d" />
+    <img height="55" alt="image" src="https://github.com/user-attachments/assets/1f1435c5-9199-4ef1-94c8-d5b718b58bd1" />
+</div>
+
 Time tracking CLI for developers.
 
 ## Features
