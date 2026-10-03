@@ -1,7 +1,7 @@
 [project]
 name = "tempo"
 version = "0.1.0"
-description = "Add your description here"
+description = "A CLI time tracking application for developers"
 readme = "README.md"
 authors = [
     { name = "guwisu"}
